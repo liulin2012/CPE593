@@ -64,18 +64,20 @@ void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vect
 
 int main(int argc, const char * argv[]) {
     long a=0;
-    long b=10000000000;
+    long b=1000000000;
 //    long a;//input a
 //    long b;//input b
 //    cout<<"input a"<<endl;
 //    cin>>a;
 //    cout<<"input b"<<endl;
 //    cin>>b;
+    clock_t tBegin,tEnd,Time;
+    tBegin=clock();
 //    double c=sqrt(b);
     long n=b-a+1;
     
     //inilize the mutilthread
-    const int num_threads = 10192;
+    const int num_threads = 1024;
     thread t[num_threads];
     long num[num_threads];
     long chunk=n/num_threads;
@@ -133,7 +135,9 @@ int main(int argc, const char * argv[]) {
     {
         totoalNum+=num[i];
     }
-    cout<<totoalNum;
-    
+    cout<<totoalNum <<endl;
+    tEnd=clock();
+    double totaltime=(double)(tEnd-tBegin)/CLOCKS_PER_SEC;
+    cout<<totaltime<<endl;
     return 0;
 }
