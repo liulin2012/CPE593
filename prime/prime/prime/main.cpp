@@ -15,7 +15,7 @@ using namespace std;
 //static const int num_threads = 8;
 
 void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vector<bool> bvf) {
-    cout << "Launched by thread " << tid <<" begin:"<<begin<<" end:"<<end<<endl;
+//    cout << "Launched by thread " << tid <<" begin:"<<begin<<" end:"<<end<<endl;
     long c=sqrt(end);
     long number=end-begin+1;
     bool ifOdd=begin%2;
@@ -52,7 +52,7 @@ void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vect
             num+=(begin+i);
         }
     }
-    cout<<"tid"<<tid<<":"<<num<<endl;
+//    cout<<"tid"<<tid<<":"<<num<<endl;
     
 }
 //int main(){
@@ -64,7 +64,7 @@ void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vect
 
 int main(int argc, const char * argv[]) {
     long a=0;
-    long b=1000000000;
+    long b=10000000000;
 //    long a;//input a
 //    long b;//input b
 //    cout<<"input a"<<endl;
@@ -75,7 +75,7 @@ int main(int argc, const char * argv[]) {
     long n=b-a+1;
     
     //inilize the mutilthread
-    const int num_threads = 8;
+    const int num_threads = 10192;
     thread t[num_threads];
     long num[num_threads];
     long chunk=n/num_threads;
@@ -104,16 +104,18 @@ int main(int argc, const char * argv[]) {
             }
         }
     }
+    cout<<"creat the main\n";
     
+    long begin=a-chunk;
+    long end=a-1;
     //Launch a group of threads
     for (int i = 0; i < num_threads; i++) {
-        long begin=a+chunk*i;
-        long end;
+        begin+=chunk;
         if(num_threads==i+1){
             end=b;
         }else
         {
-            end=a+chunk*(i+1)-1;
+            end+=chunk;
         }
         num[i]=0;
         t[i] = thread(call_from_thread, i,begin,end,bv[i],ref(num[i]),bvf);
