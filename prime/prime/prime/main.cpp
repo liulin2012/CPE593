@@ -14,7 +14,7 @@ using namespace std;
 
 //static const int num_threads = 8;
 
-void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num) {
+void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vector<bool> bvf) {
     cout << "Launched by thread " << tid <<" begin:"<<begin<<" end:"<<end<<endl;
     long c=sqrt(end);
     long number=end-begin+1;
@@ -24,7 +24,7 @@ void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num) {
     long theFirst;
     long j;
     for(int i=3;i<=c;i+=2){
-//        if(bv[i]){
+        if(bvf[i]){
             i2=i<<1;
             theFirst=begin/i;
             if(theFirst<3)theFirst=3;
@@ -36,7 +36,7 @@ void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num) {
             {
                 bv[j]=false;
             }
-//        }
+        }
     
     }
     if(begin==0){bv[0]=bv[1]=false;num=2;}
@@ -91,7 +91,19 @@ int main(int argc, const char * argv[]) {
             bv.push_back(vector<bool>(chunk,true));
         }
     }
-
+    
+    //ininlize the first array
+    long c=sqrt(b);
+    vector<bool>bvf(c,true);
+    for(int i=3;i<=c;i+=2){
+        if(bvf[i]){
+            int i2=i<<1;
+            for(int j=i*i;j<c;j+=i2)
+            {
+                bvf[j]=false;
+            }
+        }
+    }
     
     //Launch a group of threads
     for (int i = 0; i < num_threads; i++) {
@@ -104,7 +116,7 @@ int main(int argc, const char * argv[]) {
             end=a+chunk*(i+1)-1;
         }
         num[i]=0;
-        t[i] = thread(call_from_thread, i,begin,end,bv[i],ref(num[i]));
+        t[i] = thread(call_from_thread, i,begin,end,bv[i],ref(num[i]),bvf);
     }
     
     std::cout << "Launched from the main\n";
