@@ -13,9 +13,8 @@
 #include <thread>
 using namespace std;
 
-
+//the thread
 void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vector<bool> bvf) {
-//    cout << "Launched by thread " << tid <<" begin:"<<begin<<" end:"<<end<<endl;
     long c=sqrt(end);
     long number=end-begin+1;
     bool ifOdd=begin%2;
@@ -52,8 +51,6 @@ void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vect
             num+=(begin+i);
         }
     }
-//    cout<<"tid"<<tid<<":"<<num<<endl;
-    
 }
 
 int main(int argc, const char * argv[]) {
