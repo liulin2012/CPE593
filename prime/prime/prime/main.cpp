@@ -13,8 +13,32 @@
 #include <thread>
 using namespace std;
 
+//input the __int128
+std::ostream& operator<<( std::ostream& dest, __int128_t value ) {
+    std::ostream::sentry s( dest );
+    if (s) {
+        __uint128_t tmp = value < 0 ? -value : value;
+        char buffer[128];
+        char* d = std::end(buffer);
+        do {
+            --d;
+            *d = "0123456789"[tmp % 10];
+            tmp /= 10;
+        } while (tmp != 0);
+        if (value < 0) {
+            --d;
+            *d = '-';
+        }
+        long len = std::end(buffer) - d;
+        if (dest.rdbuf()->sputn(d, len) != len) {
+            dest.setstate(std::ios_base::badbit);
+        }
+    }
+    return dest;
+}
+
 //the thread
-void call_from_thread(int tid,long begin,long end,vector<bool> bv,long &num,vector<bool> bvf) {
+void call_from_thread(int tid,long begin,long end,vector<bool> bv,__int128 &num,vector<bool> bvf) {
     long c=sqrt(end);
     long number=end-begin+1;
     bool ifOdd=begin%2;
@@ -61,14 +85,11 @@ int main(int argc, const char * argv[]) {
     cout<<"input b"<<endl;
     cin>>b;
     long n=b-a+1;
-    
     auto t_start = std::chrono::high_resolution_clock::now();
-    
-    
     //inilize the mutilthread
-    const int num_threads = 1024;
+    const int num_threads = 1000;
     thread t[num_threads];
-    long num[num_threads];
+    __int128 num[num_threads];
     long chunk=n/num_threads;
     vector<vector<bool>>bv;
     for(int i=0;i<num_threads;i++)
@@ -95,7 +116,7 @@ int main(int argc, const char * argv[]) {
             }
         }
     }
-    cout<<"creat the main\n";
+    cout<<"creat the main,thread number:"<<num_threads<<endl;
     
     long begin=a-chunk;
     long end=a-1;
@@ -119,7 +140,7 @@ int main(int argc, const char * argv[]) {
         t[i].join();
     }
     
-    long totoalNum=0;
+    __int128 totoalNum=0;
     for(int i=0;i<num_threads;i++)
     {
         totoalNum+=num[i];
