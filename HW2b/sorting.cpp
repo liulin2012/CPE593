@@ -1,11 +1,13 @@
 #include <iostream>
+#include <chrono>
+#include <string>
+#include <cmath>
 #include <cstring>
 #include <vector>
 #include <fstream> 
 #include <cstdlib>
 using namespace std;
 
-const int k=5;
 
 void insertionSort(vector<int>& numArray,int left,int right){
 	for(int i=left+1;i!=right+1;i++)	
@@ -43,37 +45,85 @@ int partition(vector<int>& numArray,int left,int right){
 	return left;
 }
 
-void quickSort(vector<int>& numArray,int left,int right){
+void quickSort(vector<int>& numArray,int left,int right,int k){
 	if((right-left)>=k)
 	{
 		int q=partition(numArray,left,right);
-		quickSort(numArray,left,q-1);
-		quickSort(numArray,q+1,right);
+		quickSort(numArray,left,q-1,k);
+		quickSort(numArray,q+1,right,k);
 	}
 	else if(left<right){
 		insertionSort(numArray,left,right);
 	}
 }
 
-int main(int argc, char *argv[]) {
-	fstream sortFile("HW2.txt",ios::in);		 
-	char num[256];
-	char nums[256];
-	sortFile.getline(num,256,'\n');
-	int number=atoi(num);
-	vector<int> numbers;
-	sortFile.getline(nums,256,'\n');
-	char *token=strtok(nums," ");
-	while(token!=NULL){
-		numbers.push_back(atoi(token));
-		token=strtok(NULL," ");
-	}
-	quickSort(numbers,0,numbers.size()-1);	
-	vector<int>::iterator it=numbers.begin();
-	for(;it!=numbers.end();it++)
+void generateNum(int x){
+	int count=pow(10,x);
+	string filename=to_string(x);
+	ofstream myfile;
+	myfile.open(filename+".txt");
+	for(int i=0;i<count-1;i++)
 	{
-		cout<<*it<<",";
+		myfile<<rand()<<" ";
 	}
-	cout<<endl;
+	myfile<<rand();
+	myfile.close();
+}
+
+void goldenMeanSearch(int begin,int end,vector<int> numb,int interval){
+	int intval=end-begin+1;
+	double phi=0.618;
+	while(intval>interval)	
+	{
+		vector<int> numbers(numb);
+		int k=begin+intval*phi;
+    		auto t_start = std::chrono::high_resolution_clock::now();
+		quickSort(numbers,0,numbers.size()-1,k);
+    		auto t_end = std::chrono::high_resolution_clock::now();
+		double useTime1=chrono::duration<double, std::milli>(t_end-t_start).count()/1000;
+    		cout<<"K is "<<k<<" used time:"<<useTime1<<" Sec"<<endl;
+
+
+		vector<int> numbers2(numb);
+		k=end-intval*phi;
+    		t_start = std::chrono::high_resolution_clock::now();
+		quickSort(numbers2,0,numbers2.size()-1,k);
+    		t_end = std::chrono::high_resolution_clock::now();
+		double useTime2=chrono::duration<double, std::milli>(t_end-t_start).count()/1000;
+    		cout<<"K is "<<k<<" used time:"<<useTime2<<" Sec"<<endl;
+		cout<<endl;
+		if(useTime1>useTime2){
+			end=begin+intval*phi;
+			intval=end-begin+1;
+			if(intval<=interval)
+			cout<<"The best k is "<<begin<<endl;
+		}else{
+			begin=end-intval*phi;
+			intval=end-begin+1;
+
+			if(intval<=interval)
+			cout<<"The best k is "<<end<<endl;
+		}
+	}
+
+}
+int main(int argc, char *argv[]) {
+	int powCount;
+	cout<<"please input the number 6/7/8:"<<endl;
+	cin>>powCount;
+	int begin=20;
+	int end=2000;
+	int interval=10;
+	generateNum(powCount);
+	ifstream sortFile(to_string(powCount)+".txt");		 
+	vector<int> numbers;
+	while(!sortFile.eof()){
+		string oneNumber;
+		getline(sortFile,oneNumber,' ');
+		if(oneNumber!="\n")
+		numbers.push_back(stoi(oneNumber));
+	}
+	cout<<numbers.size()<<endl;
+	goldenMeanSearch(begin,end,numbers,interval);
 }
 
