@@ -5,10 +5,7 @@
 #include <cstdlib>
 using namespace std;
 
-const int k=2;
-void fastSort(vector<int>& numArray,int left,int right){
-	
-}
+const int k=5;
 
 void insertionSort(vector<int>& numArray,int left,int right){
 	for(int i=left+1;i!=right+1;i++)	
@@ -21,6 +18,40 @@ void insertionSort(vector<int>& numArray,int left,int right){
 			j--;
 		}
 		numArray[j+1]=key;
+	}
+}
+
+int partition(vector<int>& numArray,int left,int right){
+	int i=rand()%(right-left+1)+left;
+	int pivot=numArray[i];
+	swap(numArray[right],numArray[i]);
+	int iniRight=right;	
+	while(left!=right){
+		while(left!=right&&numArray[left]<pivot){
+			left++;	
+		}
+
+		while(left!=right&&numArray[right]>=pivot){
+			right--;	
+		}
+		if(left!=right){
+			swap(numArray[left],numArray[right]);
+			left++;
+		}
+	}
+	swap(numArray[iniRight],numArray[left]);
+	return left;
+}
+
+void quickSort(vector<int>& numArray,int left,int right){
+	if((right-left)>=k)
+	{
+		int q=partition(numArray,left,right);
+		quickSort(numArray,left,q-1);
+		quickSort(numArray,q+1,right);
+	}
+	else if(left<right){
+		insertionSort(numArray,left,right);
 	}
 }
 
@@ -37,10 +68,12 @@ int main(int argc, char *argv[]) {
 		numbers.push_back(atoi(token));
 		token=strtok(NULL," ");
 	}
-	insertionSort(numbers,0,numbers.size()-1);	
+	quickSort(numbers,0,numbers.size()-1);	
 	vector<int>::iterator it=numbers.begin();
 	for(;it!=numbers.end();it++)
 	{
 		cout<<*it<<",";
 	}
+	cout<<endl;
 }
+
