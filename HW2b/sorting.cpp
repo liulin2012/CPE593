@@ -103,8 +103,8 @@ void goldenMeanSearch(int begin,int end,vector<int> numb,int interval){
             cout<<"The best k is "<<end<<endl;
         }
     }
-
 }
+
 int main(int argc, char *argv[]) {
     int powCount;
     cout<<"please input the number 6/7/8:"<<endl;
@@ -124,4 +124,3 @@ int main(int argc, char *argv[]) {
     cout<<numbers.size()<<endl;
     goldenMeanSearch(begin,end,numbers,interval);
 }
-
