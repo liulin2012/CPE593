@@ -34,7 +34,7 @@ int partition(vector<int>& numArray,int left,int right){
         }
 
         while(left!=right&&numArray[right]>=pivot){
-            right--;    
+            right--;
         }
         if(left!=right){
             swap(numArray[left],numArray[right]);
@@ -77,20 +77,19 @@ void goldenMeanSearch(int begin,int end,vector<int> numb,int interval){
     {
         vector<int> numbers(numb);
         int k=begin+intval*phi;
-            auto t_start = std::chrono::high_resolution_clock::now();
+        auto t_start = std::chrono::high_resolution_clock::now();
         quickSort(numbers,0,numbers.size()-1,k);
-            auto t_end = std::chrono::high_resolution_clock::now();
+        auto t_end = std::chrono::high_resolution_clock::now();
         double useTime1=chrono::duration<double, std::milli>(t_end-t_start).count()/1000;
-            cout<<"K is "<<k<<" used time:"<<useTime1<<" Sec"<<endl;
-
+        cout<<"K is "<<k<<" used time:"<<useTime1<<" Sec"<<endl;
 
         vector<int> numbers2(numb);
         k=end-intval*phi;
-            t_start = std::chrono::high_resolution_clock::now();
+        t_start = std::chrono::high_resolution_clock::now();
         quickSort(numbers2,0,numbers2.size()-1,k);
-            t_end = std::chrono::high_resolution_clock::now();
+        t_end = std::chrono::high_resolution_clock::now();
         double useTime2=chrono::duration<double, std::milli>(t_end-t_start).count()/1000;
-            cout<<"K is "<<k<<" used time:"<<useTime2<<" Sec"<<endl;
+        cout<<"K is "<<k<<" used time:"<<useTime2<<" Sec"<<endl;
         cout<<endl;
         if(useTime1>useTime2){
             end=begin+intval*phi;
@@ -100,7 +99,6 @@ void goldenMeanSearch(int begin,int end,vector<int> numb,int interval){
         }else{
             begin=end-intval*phi;
             intval=end-begin+1;
-
             if(intval<=interval)
             cout<<"The best k is "<<end<<endl;
         }
