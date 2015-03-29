@@ -17,7 +17,7 @@ void insertionSort(vector<int>& numArray,int left,int right){
 			numArray[j+1]=numArray[j];
 			j--;
 		}
-		numArray[j+1]=key;
+      numArray[j+1]=key;
 	}
 }
 
