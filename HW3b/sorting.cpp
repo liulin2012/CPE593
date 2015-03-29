@@ -1,14 +1,13 @@
 #include <iostream>
-
 #include <chrono>
 #include <string>
 #include <cmath>
 #include <cstring>
 #include <vector>
 #include <fstream> 
-#include <cstdlib>
+#include <random>
+//#include <cstdlib>
 using namespace std;
-
 
 void insertionSort(vector<int>& numArray,int left,int right){
     for(int i=left+1;i!=right+1;i++)    
@@ -25,7 +24,9 @@ void insertionSort(vector<int>& numArray,int left,int right){
 }
 
 int partition(vector<int>& numArray,int left,int right){
-    int i=rand()%(right-left+1)+left;
+    random_device rd;
+    mt19937 mt(rd());
+    int i=mt()%(right-left+1)+left;
     int pivot=numArray[i];
     swap(numArray[right],numArray[i]);
     int iniRight=right; 
@@ -59,15 +60,17 @@ void quickSort(vector<int>& numArray,int left,int right,int k){
 }
 
 void generateNum(int x){
+    random_device rd;
+    mt19937 mt(rd());
     int count=pow(10,x);
     string filename=to_string(x);
     ofstream myfile;
     myfile.open(filename+".txt");
     for(int i=0;i<count-1;i++)
     {
-        myfile<<rand()<<" ";
+        myfile<<mt()<<" ";
     }
-    myfile<<rand();
+    myfile<<mt();
     myfile.close();
 }
 
