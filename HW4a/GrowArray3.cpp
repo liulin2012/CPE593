@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdint>
 using namespace std;
 
 template<typename T>
@@ -9,9 +10,8 @@ private:
   uint32_t used_; // This is the number of cells used so far
 public:
   GrowArray() {
-    size_ = 8;
-    used_ = 0;
-    p = new T[size_];    // OLD Way: NULL, less old way 0
+    size_ = 0;
+    p = nullptr;    // OLD Way: NULL, less old way 0
   }
 
   GrowArray(uint32_t initialSize) {
@@ -34,54 +34,49 @@ public:
   // move constructor
   GrowArray(const GrowArray&& orig) {
   }
-
-  void grow() {
-    T* temp = p;
-    p = new T[size_*2];
-    for (int i = 0; i < size_; i++) p[i] = temp[i];
-    size_ *= 2;
-    delete [] temp;
-  }
   // O( 1  )
   void addEnd(const T& v) {
-    if (size_ == used_)
+    if (  )
       grow();
-    //T* temp = p;
-    p[used_] = v;
-    used_++;
-    //p = new T[size_];
-    //for (int i = 0; i < size_-1; i++)
-    //  p[i] = temp[i];
-    //p[size_-1] = v;
-    //delete [] temp;
+    T* temp = p;
+    size_++;
+    p = new T[size_];
+    for (int i = 0; i < size_-1; i++)
+      p[i] = temp[i];
+    p[size_-1] = v;
+    delete [] temp;
   }
   // O(size)
   void addStart(const T& v) {
-    if (size_ == used_) grow();
-    for (int i = used_; i > 0; i--)
-      p[i] = p[i-1];
+    T* temp = p;
+    size_++;
+    p = new T[size_];
     p[0] = v;
-    used_++;
+    for (int i = 1; i < size_; i++)
+      p[i] = temp[i-1];
+    delete [] temp;
   }
   //O(size)
   void deleteEnd() {
-    used_--;
+    T* temp = p;
+    p = new T[--size_];
+    for (int i = 0; i < size_; i++)
+      p[i] = temp[i];
+    delete [] temp;
   }
 
   //O(size)
   void deleteStart() {
+    T* temp = p;
+    p = new T[--size_];
     for (int i = 0; i < size_; i++)
-      p[i] = p[i+1];
-    used_--;
+      p[i] = temp[i+1];
+    delete [] temp;
   }
 
   // readonly method size returns the size of the list
   uint32_t size() const {
     return size_;
-  }
-
-  uint32_t used() const {
-    return used_;
   }
 
   T operator [](int i) const {
@@ -94,27 +89,27 @@ public:
 
   friend ostream& operator <<(ostream& s, const GrowArray& a) {
     s << '[';
-    for (int i = 0; i < a.used(); i++)
+    for (int i = 0; i < a.size(); i++)
       s << a.p[i] << ' ';
     s << ']';
     return s;
   }
 };
 
-int main(int argc, char *argv[])
-{
+int main() {
+  GrowArray<double> a; // start with 10 element
+  cout << a << '\n';
   
-  string name = "hw4ainp";
-  freopen((name + ".dat").c_str(), "r", stdin);
-  int n, m, p;
-  cin >> n;
-  cin >> m;
-  cin >> p;
-  GrowArray<int> *test = new GrowArray<int>();
-  int x = 1;
-  while (n--) test->addEnd(x++);
-  while (m--) test->deleteEnd();
-  while (p--) test->deleteStart();
-  cout << *test << endl;
-  return 0;
+  // Should be O(n)
+  const int n = 10000000;
+  for (int i = 0; i < n; i++)
+    a.addEnd(i);
+
+  GrowArray<double> b;
+  b.addEnd(5.2);
+  b.addStart(3.1);
+  b.addEnd(6.2);
+  b.deleteStart();
+  cout << b << '\n';
 }
+
